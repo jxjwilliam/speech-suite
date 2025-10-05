@@ -1,0 +1,30 @@
+# Project Context: STT/TTS App with Multi-LLM Analysis
+
+## Project Goal
+Building a speech-to-text/text-to-speech application by synthesizing proposals from multiple LLMs (ChatGPT, Claude, Gemini, Grok, Perplexity).
+
+## Analysis Priorities
+1. Compare architectural approaches across all LLM proposals
+2. Identify best practices from each proposal
+3. Flag conflicting recommendations
+4. Synthesize hybrid solutions that combine strengths
+5. Prioritize: Performance > Maintainability > Feature richness
+
+## When Reading Proposals
+- Look for patterns across multiple LLMs
+- Note unique innovations from individual LLMs
+- Identify technical trade-offs
+- Consider implementation complexity
+- Evaluate scalability implications
+
+## Code Review Standards
+- Prefer solutions recommended by 3+ LLMs
+- Flag single-source recommendations for review
+- Prioritize production-ready over experimental code
+- Consider cross-platform compatibility (iOS/Android)
+
+## Technology Stack Preferences
+- React Native or Flutter for mobile
+- Modern STT/TTS APIs (Whisper, Google Cloud, Azure)
+- Efficient state management
+- Offline capability considerations
