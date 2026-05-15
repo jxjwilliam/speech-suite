@@ -1,6 +1,6 @@
-# STT/TTS Hybrid App
+# STT/TTS Hybrid
 
-A lightweight local development README for the STT/TTS Hybrid App built with Next.js 14.
+A Next.js + TypeScript app providing real-time and file-based speech-to-text and text-to-speech with multi-provider support (OpenAI Whisper/TTS, Google Cloud, Azure Speech, and browser fallbacks). Includes a settings panel, audio visualizer, and easy export of transcripts.
 
 ## Quick Start
 
@@ -67,18 +67,18 @@ Run tests (note: coverage thresholds may be configured):
 npm test
 ```
 
-## Docker
-
-Build and run a container:
-
-```bash
-npm run docker:build
-npm run docker:run
-```
 
 ## Contributing
 
 Please open issues or PRs on the project repository. Keep secrets out of commits and follow the codebase conventions (TypeScript `strict: true`).
+
+## Assets
+
+This repo contains an `assets/` folder with example/demo images used by the UI. Replace these placeholders with real artwork as needed:
+
+- ![assets/t3.png](assets/t3.png)
+- ![assets/t2.png](assets/t2.png)
+- ![assets/t1.png](assets/t1.png)
 
 ---
 

@@ -67,7 +67,7 @@ A comprehensive cross-platform Speech-to-Text (STT) and Text-to-Speech (TTS) app
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd stt-tts-hybrid-app
+   cd speech-suite
    ```
 
 2. **Install dependencies**
@@ -167,12 +167,6 @@ A comprehensive cross-platform Speech-to-Text (STT) and Text-to-Speech (TTS) app
 1. **Connect repository** to Vercel
 2. **Add environment variables** in Vercel dashboard
 3. **Deploy automatically** on git push
-
-### Docker
-```bash
-docker build -t stt-tts-app .
-docker run -p 3000:3000 stt-tts-app
-```
 
 ### Manual deployment
 ```bash

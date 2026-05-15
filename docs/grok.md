@@ -46,8 +46,8 @@ Cursor is built on VS Code with built-in AI (powered by models like Claude/GPT) 
 
 - **Install and Create Project:**
   1. Download/install Cursor.
-  2. Open Cursor and create a new folder/workspace: File > Open Folder > Select/create `stt-tts-app` (your main project dir).
-  3. Inside `stt-tts-app`, create a subfolder `proposals` and move your 5 `.md` files there.
+  2. Open Cursor and create a new folder/workspace: File > Open Folder > Select/create `speech-suite` (your main project dir).
+  3. Inside `speech-suite`, create a subfolder `proposals` and move your 5 `.md` files there.
   4. Initialize a Git repo (optional but recommended): Terminal > `git init`. This lets Cursor track changes.
 
 - **Configure Cursor AI:**

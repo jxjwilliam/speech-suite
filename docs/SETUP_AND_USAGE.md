@@ -13,7 +13,7 @@
 ```bash
 # 1. Clone and enter the repo
 git clone <repo-url>
-cd stt-tts-hybrid-app
+cd speech-suite
 
 # 2. Install dependencies
 npm install

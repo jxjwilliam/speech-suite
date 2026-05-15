@@ -77,7 +77,7 @@ proposals/              — 7 files: PRD + user prompt + proposals from 5 LLMs
 ## Docker
 
 ```bash
-npm run docker:build   # docker build -t stt-tts-app .
+npm run docker:build   # docker build -t speech-suite .
 npm run docker:compose # docker-compose up -d (app + optional nginx sidecar)
 ```
 

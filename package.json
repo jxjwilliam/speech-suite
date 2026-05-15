@@ -1,5 +1,5 @@
 {
-  "name": "stt-tts-hybrid-app",
+  "name": "speech-suite",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,8 +11,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "docker:build": "docker build -t stt-tts-app .",
-    "docker:run": "docker run -p 3000:3000 stt-tts-app",
+    "docker:build": "docker build -t speech-suite .",
+    "docker:run": "docker run -p 3000:3000 speech-suite",
     "docker:compose": "docker-compose up -d"
   },
   "dependencies": {
