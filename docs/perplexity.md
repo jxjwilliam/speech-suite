@@ -35,7 +35,7 @@ Based on the attached STT_TTS_PRD.md requirements, please generate a full archit
 ## Folder structure (Cursor workspace)
 
 ```
-stt-tts-hybrid-llm/
+speech-suite/
 ├─ .env
 ├─ package.json
 ├─ src/
@@ -64,7 +64,7 @@ stt-tts-hybrid-llm/
 
 ```bash
 # create project folder and init
-mkdir stt-tts-hybrid-llm && cd stt-tts-hybrid-llm
+mkdir speech-suite&& cd speech-suite
 npm init -y
 npm install axios openai fs-extra dotenv
 # add other SDKs later (elevenlabs, whisper client, or vendor SDKs)
@@ -207,7 +207,7 @@ Approaches:
 
 ## Cursor IDE-specific workflow (practical steps)
 
-1. **Open Cursor → New Project** and point to your `stt-tts-hybrid-llm` folder (or create it in Cursor).
+1. **Open Cursor → New Project** and point to your `speech-suite` folder (or create it in Cursor).
 2. Drop `/data` and `/src` files into the workspace.
 3. Use Cursor’s inline AI to `Open` a proposals file and run prompts like:
 
@@ -301,4 +301,4 @@ Open all files under /data (proposals-*.json). Produce: 1) a 6-bullet summary pe
 
 ---
 
-*Document generated: `stt-tts-hybrid-llm-plan.md` — open in Cursor to download or edit further.*
+*Document generated: `speech-suite-plan.md` — open in Cursor to download or edit further.*
