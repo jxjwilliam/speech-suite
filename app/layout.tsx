@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   description: 'Cross-platform Speech-to-Text and Text-to-Speech application with multi-provider support',
   keywords: ['speech-to-text', 'text-to-speech', 'AI', 'voice', 'accessibility'],
   authors: [{ name: 'William Jiang' }],
-  viewport: 'width=device-width, initial-scale=1',
 }
 
 export default function RootLayout({
@@ -36,4 +35,10 @@ export default function RootLayout({
       </body>
     </html>
   )
+}
+
+// Next.js 14+ requires the `viewport` export separately from `metadata`.
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }

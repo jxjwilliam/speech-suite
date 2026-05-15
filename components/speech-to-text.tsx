@@ -159,8 +159,10 @@ export function SpeechToText({
       }
 
       const data = await response.json()
-      setTranscript(data.transcript)
-      handleTranscript(data.transcript)
+      // Support both `{ text: string }` (OpenAI) and legacy `{ transcript: string }`
+      const transcriptText = data.text ?? data.transcript ?? ''
+      setTranscript(transcriptText)
+      handleTranscript(transcriptText)
       toast.success('Audio processed successfully!')
     } catch (error) {
       console.error('Error processing audio:', error)

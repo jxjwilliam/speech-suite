@@ -130,3 +130,6 @@ pnpm-lock.yaml
 # Design system specific
 tokens/generated/
 docs/generated/
+.cursor/comands
+.specify
+vercel.json
