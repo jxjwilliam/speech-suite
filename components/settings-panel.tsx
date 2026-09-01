@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
-import { Settings, Mic, Volume2, Globe, Zap } from 'lucide-react'
 import { getLanguageName } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
@@ -28,17 +27,17 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
   const [localSettings, setLocalSettings] = useState(settings)
 
   const sttProviders = [
-    { value: 'openai', label: 'OpenAI Whisper', description: 'Highest accuracy, 99+ languages' },
-    { value: 'google', label: 'Google Cloud', description: 'Fast, 125+ languages' },
-    { value: 'azure', label: 'Azure Speech', description: 'Enterprise-grade, 100+ languages' },
-    { value: 'browser', label: 'Browser (Web Speech API)', description: 'Free, limited languages' },
+    { value: 'browser', label: 'Browser (Web Speech API)', description: '免费 · 无需 API Key · Chrome/Edge/Safari', disabled: false },
+    { value: 'openai', label: 'OpenAI Whisper', description: '高准确率 · 文件转录 · 需要 API Key', disabled: false },
+    { value: 'google', label: 'Google Cloud', description: '未提供 API Key · 暂不可用', disabled: true },
+    { value: 'azure', label: 'Azure Speech', description: '未提供 API Key · 暂不可用', disabled: true },
   ]
 
   const ttsProviders = [
-    { value: 'openai', label: 'OpenAI TTS', description: 'High quality, 11 voices' },
-    { value: 'google', label: 'Google Cloud TTS', description: '380+ voices, 75+ languages' },
-    { value: 'azure', label: 'Azure Speech TTS', description: 'Neural voices, 100+ languages' },
-    { value: 'browser', label: 'Browser (Web Speech API)', description: 'Free, system voices' },
+    { value: 'browser', label: 'Browser (Web Speech API)', description: '免费 · 系统音色 · 无需 API Key', disabled: false },
+    { value: 'openai', label: 'OpenAI TTS', description: '6 个音色 · 需要 API Key', disabled: false },
+    { value: 'google', label: 'Google Cloud TTS', description: '未提供 API Key · 暂不可用', disabled: true },
+    { value: 'azure', label: 'Azure Speech TTS', description: '未提供 API Key · 暂不可用', disabled: true },
   ]
 
   const languages = [
@@ -73,8 +72,8 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
     'en-US-BrianNeural', 'en-US-AvaNeural', 'en-US-ChristopherNeural', 'en-US-ElizabethNeural'
   ]
 
-  const getAvailableVoices = () => {
-    switch (localSettings.ttsProvider) {
+  const getVoicesFor = (provider: string) => {
+    switch (provider) {
       case 'openai':
         return openaiVoices
       case 'google':
@@ -87,13 +86,23 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
   }
 
   const handleSave = () => {
-    onSettingsChange(localSettings)
-    toast.success('Settings saved!')
+    const toSave = { ...localSettings }
+    const voicesFor = getVoicesFor(toSave.ttsProvider)
+    if (!voicesFor.includes(toSave.voice)) toSave.voice = voicesFor[0]
+    onSettingsChange(toSave)
+    toast.success('设置已保存到本地浏览器 ✅')
   }
 
   const handleReset = () => {
     setLocalSettings(settings)
-    toast.success('Settings reset to defaults')
+    toast.success('已恢复为上次保存的设置')
+  }
+
+  const handleTtsProviderChange = (value: string) => {
+    const next = { ...localSettings, ttsProvider: value }
+    const voicesFor = getVoicesFor(value)
+    if (!voicesFor.includes(next.voice)) next.voice = voicesFor[0]
+    setLocalSettings(next)
   }
 
   return (
@@ -101,8 +110,7 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Application Settings
+            ⚙️ Application Settings
           </CardTitle>
           <CardDescription>
             Configure your speech-to-text and text-to-speech preferences
@@ -112,8 +120,7 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
           {/* Speech-to-Text Settings */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Mic className="h-4 w-4" />
-              <h3 className="text-lg font-semibold">Speech-to-Text</h3>
+              <h3 className="text-lg font-semibold">🎙️ Speech-to-Text</h3>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -128,7 +135,7 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
                   </SelectTrigger>
                   <SelectContent>
                     {sttProviders.map((provider) => (
-                      <SelectItem key={provider.value} value={provider.value}>
+                      <SelectItem key={provider.value} value={provider.value} disabled={provider.disabled}>
                         <div>
                           <div className="font-medium">{provider.label}</div>
                           <div className="text-xs text-gray-500">{provider.description}</div>
@@ -165,8 +172,7 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
           {/* Text-to-Speech Settings */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Volume2 className="h-4 w-4" />
-              <h3 className="text-lg font-semibold">Text-to-Speech</h3>
+              <h3 className="text-lg font-semibold">🔊 Text-to-Speech</h3>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -174,14 +180,14 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
                 <Label htmlFor="tts-provider">TTS Provider</Label>
                 <Select
                   value={localSettings.ttsProvider}
-                  onValueChange={(value) => setLocalSettings(prev => ({ ...prev, ttsProvider: value }))}
+                  onValueChange={handleTtsProviderChange}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {ttsProviders.map((provider) => (
-                      <SelectItem key={provider.value} value={provider.value}>
+                      <SelectItem key={provider.value} value={provider.value} disabled={provider.disabled}>
                         <div>
                           <div className="font-medium">{provider.label}</div>
                           <div className="text-xs text-gray-500">{provider.description}</div>
@@ -202,7 +208,7 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="max-h-60">
-                    {getAvailableVoices().map((voice) => (
+                    {getVoicesFor(localSettings.ttsProvider).map((voice) => (
                       <SelectItem key={voice} value={voice}>
                         {voice}
                       </SelectItem>
@@ -244,31 +250,43 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
           {/* Advanced Settings */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4" />
-              <h3 className="text-lg font-semibold">Advanced Settings</h3>
+              <h3 className="text-lg font-semibold">⚡ Advanced Settings</h3>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center space-x-2">
-                <Switch id="auto-detect" />
+                <Switch id="auto-detect" disabled />
                 <Label htmlFor="auto-detect">Auto-detect language</Label>
               </div>
               
               <div className="flex items-center space-x-2">
-                <Switch id="noise-reduction" />
+                <Switch id="noise-reduction" disabled />
                 <Label htmlFor="noise-reduction">Noise reduction</Label>
               </div>
               
               <div className="flex items-center space-x-2">
-                <Switch id="punctuation" />
+                <Switch id="punctuation" disabled />
                 <Label htmlFor="punctuation">Auto punctuation</Label>
               </div>
               
               <div className="flex items-center space-x-2">
-                <Switch id="profanity-filter" />
+                <Switch id="profanity-filter" disabled />
                 <Label htmlFor="profanity-filter">Profanity filter</Label>
               </div>
             </div>
+          </div>
+
+          {/* Honest notes */}
+          <div className="rounded-lg border border-dashed border-muted-foreground/30 bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground">
+            <p>💡 默认使用浏览器语音，免费且无需 API Key。</p>
+            <p className="mt-1">
+              OpenAI Whisper / TTS 仅在切换到 OpenAI 后生效（需要有效的 OPENAI_API_KEY）；
+              Google / Azure 尚未接入，故置灰不可选。
+            </p>
+            <p className="mt-1">
+              语言设置作用于浏览器实时识别；文件转录当前固定英文（Whisper）。
+              设置会自动保存在本地浏览器，刷新不丢失。
+            </p>
           </div>
 
           {/* Action Buttons */}

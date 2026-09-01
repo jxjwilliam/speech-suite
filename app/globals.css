@@ -58,6 +58,27 @@
   }
 }
 
+/* Smooth theme switching */
+html,
+body {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Gradient text accent */
+.text-gradient {
+  background: linear-gradient(120deg, #6366f1, #a855f7 45%, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+::selection {
+  background: hsl(var(--primary) / 0.25);
+}
+
 /* Custom styles for audio visualization */
 .audio-visualizer {
   display: flex;

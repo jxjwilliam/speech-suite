@@ -32,42 +32,74 @@ export function TextToSpeech({
   
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const startedRef = useRef(false)
+  const keepaliveRef = useRef<number | null>(null)
 
-  // Initialize Web Speech API
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      // Set up speech synthesis
-      const utterance = new SpeechSynthesisUtterance()
-      utterance.lang = settings.language
-      utterance.rate = settings.rate
-      utterance.pitch = settings.pitch
-      
-      // Try to set voice
-      const voices = speechSynthesis.getVoices()
-      const selectedVoice = voices.find(voice => 
-        voice.name === settings.voice || 
-        voice.lang === settings.language
-      )
-      if (selectedVoice) {
-        utterance.voice = selectedVoice
-      }
-
-      utterance.onend = () => {
-        setIsPlaying(false)
-        setIsPaused(false)
-        onSynthesisComplete()
-      }
-
-      utterance.onerror = (event) => {
-        console.error('Speech synthesis error:', event.error)
-        toast.error(`Speech synthesis error: ${event.error}`)
-        setIsPlaying(false)
-        setIsPaused(false)
-      }
-
-      synthesisRef.current = utterance
+  const clearKeepalive = () => {
+    if (keepaliveRef.current !== null) {
+      window.clearInterval(keepaliveRef.current)
+      keepaliveRef.current = null
     }
-  }, [settings, onSynthesisComplete])
+  }
+
+  useEffect(() => {
+    return () => clearKeepalive()
+  }, [])
+
+  // Build a fresh utterance per speak() call. Chrome's speech engine can get
+  // stuck when reusing one utterance across interruptions, so never reuse.
+  const createUtterance = (inputText: string) => {
+    const utterance = new SpeechSynthesisUtterance(inputText)
+    utterance.lang = settings.language
+    utterance.rate = settings.rate
+    utterance.pitch = settings.pitch
+
+    // Try to set voice
+    const voices = speechSynthesis.getVoices()
+    const selectedVoice = voices.find(
+      (voice) => voice.name === settings.voice || voice.lang === settings.language
+    )
+    if (selectedVoice) {
+      utterance.voice = selectedVoice
+    }
+
+    utterance.onstart = () => {
+      startedRef.current = true
+      setIsPlaying(true)
+      setIsPaused(false)
+    }
+
+    utterance.onend = () => {
+      // Ignore events from superseded utterances (e.g. the one we just
+      // canceled before starting a new one).
+      if (synthesisRef.current !== utterance) return
+      synthesisRef.current = null
+      clearKeepalive()
+      setIsPlaying(false)
+      setIsPaused(false)
+      onSynthesisComplete()
+    }
+
+    utterance.onerror = (event) => {
+      if (synthesisRef.current !== utterance) return
+      synthesisRef.current = null
+      clearKeepalive()
+      // "interrupted" / "canceled" fire whenever playback is intentionally
+      // stopped (Stop button, a new utterance, or the Settings voice preview).
+      // The browser reports them as errors, but they are not real failures.
+      if (event.error === 'interrupted' || event.error === 'canceled') {
+        setIsPlaying(false)
+        setIsPaused(false)
+        return
+      }
+      console.error('Speech synthesis error:', event.error)
+      toast.error(`Speech synthesis error: ${event.error}`)
+      setIsPlaying(false)
+      setIsPaused(false)
+    }
+
+    return utterance
+  }
 
   const speak = async () => {
     if (!text.trim()) {
@@ -75,13 +107,72 @@ export function TextToSpeech({
       return
     }
 
-    if (settings.ttsProvider === 'browser' && synthesisRef.current) {
-      // Use browser's built-in speech synthesis
-      synthesisRef.current.text = text
-      speechSynthesis.speak(synthesisRef.current)
+    if (settings.ttsProvider === 'browser') {
+      if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+        toast.error('This browser does not support speech synthesis')
+        return
+      }
+
+      const synth = window.speechSynthesis
+      const wasBusy = synth.speaking || synth.pending
+      if (wasBusy) {
+        // Chrome can silently drop a speak() issued while the engine is busy
+        // or immediately after a cancel(), so clear the queue first.
+        synth.cancel()
+      }
+
+      startedRef.current = false
+      clearKeepalive()
+
+      const startSpeaking = () => {
+        // resume() un-sticks Chrome's engine after interruptions.
+        try {
+          synth.resume()
+        } catch {
+          // no-op
+        }
+        const utterance = createUtterance(text)
+        synthesisRef.current = utterance
+        synth.speak(utterance)
+
+        // Chrome's engine can stall after ~14s of continuous speech; a
+        // periodic resume() keeps it ticking (no-op when already running).
+        keepaliveRef.current = window.setInterval(() => {
+          if (startedRef.current) {
+            try {
+              synth.resume()
+            } catch {
+              // no-op
+            }
+          }
+        }, 10000)
+      }
+
+      if (wasBusy) {
+        // Let cancel() settle for one tick before speaking, otherwise the new
+        // utterance can be swallowed by the engine.
+        window.setTimeout(startSpeaking, 50)
+      } else {
+        startSpeaking()
+      }
+
       setIsPlaying(true)
       setIsPaused(false)
       toast.success('Started speaking...')
+
+      // Chrome/Firefox can silently refuse to start (no installed voices, or a
+      // stuck speech engine). If nothing starts shortly, surface it instead of
+      // leaving the user with a dead "Speak" button.
+      window.setTimeout(() => {
+        if (startedRef.current) return
+        synth.cancel()
+        clearKeepalive()
+        setIsPlaying(false)
+        setIsPaused(false)
+        toast.error(
+          'Speech synthesis did not start — your browser may not have a voice installed for this language.'
+        )
+      }, 2000)
     } else {
       // Use API-based synthesis
       await synthesizeWithAPI()
@@ -117,10 +208,18 @@ export function TextToSpeech({
       // Play the audio
       if (audioRef.current) {
         audioRef.current.src = url
-        audioRef.current.play()
-        setIsPlaying(true)
-        setIsPaused(false)
-        toast.success('Started speaking...')
+        try {
+          await audioRef.current.play()
+          setIsPlaying(true)
+          setIsPaused(false)
+          toast.success('Started speaking...')
+        } catch (playError) {
+          // Browsers can reject play() (autoplay policy / no audio output).
+          console.error('Audio playback rejected:', playError)
+          toast.error(
+            'Audio playback was blocked by the browser — click Speak again to try playing.'
+          )
+        }
       }
     } catch (error) {
       console.error('Error synthesizing speech:', error)
@@ -157,6 +256,7 @@ export function TextToSpeech({
       audioRef.current.pause()
       audioRef.current.currentTime = 0
     }
+    clearKeepalive()
     setIsPlaying(false)
     setIsPaused(false)
   }

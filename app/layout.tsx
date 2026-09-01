@@ -2,12 +2,13 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'STT/TTS Hybrid App',
-  description: 'Cross-platform Speech-to-Text and Text-to-Speech application with multi-provider support',
+  title: 'Speech Suite · STT / TTS Studio',
+  description: 'Browser-first speech-to-text & text-to-speech studio — free by default, OpenAI Whisper & TTS optional.',
   keywords: ['speech-to-text', 'text-to-speech', 'AI', 'voice', 'accessibility'],
   authors: [{ name: 'William Jiang' }],
 }
@@ -18,20 +19,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        {children}
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: 'hsl(var(--card))',
-              color: 'hsl(var(--card-foreground))',
-              border: '1px solid hsl(var(--border))',
-            },
-          }}
-        />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-background text-foreground`}>
+        <ThemeProvider>
+          {children}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: 'hsl(var(--card))',
+                color: 'hsl(var(--card-foreground))',
+                border: '1px solid hsl(var(--border))',
+              },
+            }}
+          />
+        </ThemeProvider>
       </body>
     </html>
   )
