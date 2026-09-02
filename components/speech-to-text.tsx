@@ -199,7 +199,7 @@ export function SpeechToText({
                 "w-20 h-20 rounded-full",
                 isListening 
                   ? "bg-red-500 hover:bg-red-600 text-white" 
-                  : "bg-blue-500 hover:bg-blue-600 text-white"
+                  : "bg-teal-500 hover:bg-teal-600 text-white"
               )}
             >
               {isListening ? (
@@ -211,7 +211,7 @@ export function SpeechToText({
           </div>
           
           <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground">
               {isListening ? 'Listening... Click to stop' : 'Click to start speaking'}
             </p>
           </div>
@@ -220,15 +220,15 @@ export function SpeechToText({
 
       {/* File Upload */}
       <div className="space-y-4">
-        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6">
+        <div className="border-2 border-dashed border-muted-foreground/30 rounded-lg p-6">
           <div className="text-center">
-            <Upload className="mx-auto h-12 w-12 text-gray-400" />
+            <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
             <div className="mt-4">
               <label htmlFor="audio-upload" className="cursor-pointer">
-                <span className="mt-2 block text-sm font-medium text-gray-900 dark:text-white">
+                <span className="mt-2 block text-sm font-medium text-foreground">
                   Upload audio file
                 </span>
-                <span className="mt-1 block text-xs text-gray-500">
+                <span className="mt-1 block text-xs text-muted-foreground">
                   MP3, WAV, M4A, or WebM (max 25MB)
                 </span>
               </label>
@@ -245,14 +245,14 @@ export function SpeechToText({
         </div>
 
         {audioFile && (
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+          <div className="bg-muted/60 rounded-lg p-4 border border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                <span className="text-sm font-medium text-foreground">
                   {audioFile.name}
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   ({(audioFile.size / 1024 / 1024).toFixed(2)} MB)
                 </span>
               </div>
@@ -279,11 +279,11 @@ export function SpeechToText({
 
       {/* Current Transcript */}
       {transcript && (
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-          <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+        <div className="bg-muted/60 rounded-lg p-4 border border-border">
+          <h4 className="text-sm font-medium text-foreground mb-2">
             Current Transcript:
           </h4>
-          <p className="text-sm text-gray-700 dark:text-gray-300">
+          <p className="text-sm text-foreground/90">
             {transcript}
           </p>
         </div>

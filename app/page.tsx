@@ -184,12 +184,12 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-100 transition-colors duration-300 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-sky-50 to-cyan-100 transition-colors duration-300 dark:from-slate-950 dark:via-slate-900 dark:to-cyan-950">
       <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
         <header className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 text-white shadow-lg shadow-indigo-500/30">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/30">
               <Mic className="h-5 w-5" />
             </div>
             <div>
@@ -204,7 +204,7 @@ export default function Home() {
 
         {/* Hero */}
         <section className="mt-8 text-center sm:mt-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 dark:border-teal-500/30 dark:bg-teal-500/10 dark:text-teal-300">
             🎙️ 默认浏览器语音 · 免费，无需 API Key
           </span>
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -218,10 +218,25 @@ export default function Home() {
         {/* Main Content */}
         <div className="mx-auto mt-8 max-w-6xl">
           <Tabs defaultValue="stt" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="stt">🎙️ Speech-to-Text</TabsTrigger>
-              <TabsTrigger value="tts">🔊 Text-to-Speech</TabsTrigger>
-              <TabsTrigger value="settings">⚙️ Settings</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 rounded-xl bg-muted/70 p-1.5">
+              <TabsTrigger
+                value="stt"
+                className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-teal-500/25"
+              >
+                🎙️ Speech-to-Text
+              </TabsTrigger>
+              <TabsTrigger
+                value="tts"
+                className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-teal-500/25"
+              >
+                🔊 Text-to-Speech
+              </TabsTrigger>
+              <TabsTrigger
+                value="settings"
+                className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-teal-500/25"
+              >
+                ⚙️ Settings
+              </TabsTrigger>
             </TabsList>
 
             {/* Speech-to-Text Tab */}
@@ -278,13 +293,13 @@ export default function Home() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="min-h-[200px] p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border">
+                    <div className="min-h-[200px] p-4 bg-muted/60 rounded-lg border border-border">
                       {transcript ? (
-                        <p className="text-gray-900 dark:text-white whitespace-pre-wrap">
+                        <p className="text-foreground whitespace-pre-wrap">
                           {transcript}
                         </p>
                       ) : (
-                        <p className="text-gray-500 dark:text-gray-400 italic">
+                        <p className="text-muted-foreground italic">
                           Start speaking to see your transcript here...
                         </p>
                       )}

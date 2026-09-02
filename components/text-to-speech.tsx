@@ -295,9 +295,9 @@ export function TextToSpeech({
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Type or paste your text here..."
-          className="w-full h-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+          className="w-full h-32 px-3 py-2 border border-border bg-background text-foreground rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring"
         />
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-muted-foreground">
           {text.length} characters
         </div>
       </div>
@@ -363,25 +363,25 @@ export function TextToSpeech({
       />
 
       {/* Voice Preview */}
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-        <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+      <div className="bg-muted/60 rounded-lg p-4 border border-border">
+        <h4 className="text-sm font-medium text-foreground mb-2">
           Voice Settings:
         </h4>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-gray-600 dark:text-gray-400">Provider:</span>
+            <span className="text-muted-foreground">Provider:</span>
             <span className="ml-2 font-medium capitalize">{settings.ttsProvider}</span>
           </div>
           <div>
-            <span className="text-gray-600 dark:text-gray-400">Voice:</span>
+            <span className="text-muted-foreground">Voice:</span>
             <span className="ml-2 font-medium">{settings.voice}</span>
           </div>
           <div>
-            <span className="text-gray-600 dark:text-gray-400">Rate:</span>
+            <span className="text-muted-foreground">Rate:</span>
             <span className="ml-2 font-medium">{settings.rate}x</span>
           </div>
           <div>
-            <span className="text-gray-600 dark:text-gray-400">Pitch:</span>
+            <span className="text-muted-foreground">Pitch:</span>
             <span className="ml-2 font-medium">{settings.pitch}x</span>
           </div>
         </div>

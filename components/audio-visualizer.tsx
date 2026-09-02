@@ -30,7 +30,7 @@ export function AudioVisualizer({ level, isActive, className }: AudioVisualizerP
         <div
           key={index}
           className={cn(
-            "w-1 bg-gradient-to-t from-blue-500 to-blue-300 rounded-full transition-all duration-100",
+            "w-1 bg-gradient-to-t from-teal-500 via-cyan-500 to-cyan-300 rounded-full transition-all duration-100",
             isActive ? "opacity-100" : "opacity-30"
           )}
           style={{
